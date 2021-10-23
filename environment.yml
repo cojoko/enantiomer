@@ -1,0 +1,11 @@
+name: Anomer Chemical Search
+channels:
+  - conda-forge
+dependencies:
+  - pip>=20.0.2
+  - python=3.8
+  - rdkit=2020.09.1
+  - pip:
+      - boto3
+      - s3fs
+      - sklearn
