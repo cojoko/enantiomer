@@ -1,4 +1,4 @@
-name: Anomer Chemical Search
+name: Anomer_Chemical_Search
 channels:
   - conda-forge
 dependencies:
@@ -9,3 +9,5 @@ dependencies:
       - boto3
       - s3fs
       - sklearn
+      - pytest
+      - typer

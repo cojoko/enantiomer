@@ -1,5 +1,4 @@
 
-from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, BUCKET, FILENAME
 import pandas as pd
 import numpy as np
 
@@ -19,33 +18,13 @@ import logging
 logging.getLogger().setLevel(logging.INFO)
 
 
-def load_library_from_s3(filename):
-    """Loads the file containing the molecules in the virtual library from S3
-    :return: A list of RDKit Mol objects
-    """
 
-    client = boto3.client('s3')
-    s3 = boto3.resource("s3", aws_access_key_id=AWS_ACCESS_KEY_ID,
-                        aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-
-    try:
-        logging.info("Retrieving Chemical Library...")
-        my_bucket = s3.Bucket(BUCKET)
-        my_bucket.download_file(filename, filename)
-        logging.info("Done.")
-        return sdf_to_list(filename)
-
-    except Exception as e:
-        logging.warn("There was a problem accessing file {}".format(filename))
-        logging.warn(e)
-
-    """Loads an sdf file from the local directory
-    """
-def load_library_from_local(filename):
-    return sdf_to_list(filename)
+"""Loads an sdf file from the local directory
+"""
 
 
-def sdf_to_list(filename):
+def load_sdf(filename):
+
 
     try:
         logging.info("Loading dataframe from .SDF...")
@@ -112,6 +91,8 @@ def get_closest_n_mols(test_smiles, ref_mols, n=1):
     # Generate a list of n closest neighbors for each sample. A list of lists of indicies.
     kneighbor_list = neigh.kneighbors(
         sample_test_fps, n_neighbors=n, return_distance=False)
+    
+    logging.info("Neighbor List:")
     logging.info(kneighbor_list)
 
     # The final output list. Will contain one list of neighbor tuples for each sample
@@ -122,11 +103,9 @@ def get_closest_n_mols(test_smiles, ref_mols, n=1):
         test_fp = sample_test_fps[ctr]
 
         neighbor_tuples = []
+
+        # Iterate through the index list returned by the kneighbors class
         for idx in idxs:
-
-            # Iterate through the index list returned by the kneighbors class
-
-            logging.info(idx)
 
             # Get smile and ts of neighbor molecule by dataframe index
             smile = ref_mols["smiles"].iloc[idx]
@@ -134,6 +113,7 @@ def get_closest_n_mols(test_smiles, ref_mols, n=1):
             ts = DataStructs.FingerprintSimilarity(test_fp, ref_fp)
 
             assert Chem.RDKFingerprint(Chem.MolFromSmiles(smile)) == ref_fp
+            
             # Create tuple and add to sample list
             neighbor_tuples.append((smile, ts))
 
@@ -145,16 +125,17 @@ def get_closest_n_mols(test_smiles, ref_mols, n=1):
 
 
 if __name__ == '__main__':
-    
-    lib_path = "./sample_library.sdf"
-    virtual_library = load_library_from_local(lib_path)
+
+    lib_path = "./demo_library.sdf"
+    virtual_library = load_sdf(lib_path)
+    N = 2
     
     sample_test_smiles = [
         'C[C@]12CCCN1CC1=NNC(=O)c3cc(F)cc4[nH]c2c1c34',
         'Cn1ncnc1[C@H]1c2n[nH]c(=O)c3cc(F)cc(c23)N[C@@H]1c1ccc(F)cc1',
         'C[C@]1(c2nc3c(C(N)=O)cccc3[nH]2)CCCN1'
     ]
-    N = 2
+    
     output = get_closest_n_mols(sample_test_smiles, virtual_library, n=N)
 
     expected_output = [
@@ -167,8 +148,12 @@ if __name__ == '__main__':
             ('CCC1=C[C@@H]2CN(C1)Cc1c([nH]c3ccccc13)[C@@](C(=O)OC)(c1cc3c(cc1OC)N(C)[C@H]1[C@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]4(CC)C=CCN5CC[C@]31[C@@H]54)C2', 0.697)
         ],
         [
-            ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cccc2[nH]cnc12', 0.506),
-            ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cc(F)cc2[nH]cnc12', 0.493)
+
+            # Origional, non-anomer output: ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cccc2[nH]cnc12', 0.506),
+            ('CSCC[C@H](NC(=O)CC(C)(C)C)c1nc2ccccc2[nH]1', 0.468),
+            # Origional output: ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cc(F)cc2[nH]cnc12', 0.493)
+            ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cccc2[nH]cnc12', 0.506)
+
         ]
     ]
 
