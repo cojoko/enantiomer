@@ -1,4 +1,4 @@
-name: Anomer_Chemical_Search
+name: Enantiomer_Chemical_Search
 channels:
   - conda-forge
 dependencies:

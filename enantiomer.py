@@ -149,7 +149,7 @@ if __name__ == '__main__':
         ],
         [
 
-            # Origional, non-anomer output: ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cccc2[nH]cnc12', 0.506),
+            # Origional, non-enantiomer output: ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cccc2[nH]cnc12', 0.506),
             ('CSCC[C@H](NC(=O)CC(C)(C)C)c1nc2ccccc2[nH]1', 0.468),
             # Origional output: ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cc(F)cc2[nH]cnc12', 0.493)
             ('O=C(Nc1cccc(-c2nnn[nH]2)c1)c1cccc2[nH]cnc12', 0.506)

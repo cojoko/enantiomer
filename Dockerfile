@@ -6,8 +6,8 @@ COPY environment.yml .
 
 RUN conda env create -f environment.yml
 
-SHELL ["conda", "run", "-n", "Anomer_Chemical_Search", "/bin/bash", "-c"]
+SHELL ["conda", "run", "-n", "Enantiomer_Chemical_Search", "/bin/bash", "-c"]
 
 COPY . /app
 
-ENTRYPOINT [ "conda", "run", "--no-capture-output", "-n", "Anomer_Chemical_Search", "python", "anomer.py"]
+ENTRYPOINT [ "conda", "run", "--no-capture-output", "-n", "Enantiomer_Chemical_Search", "python", "enantiomer.py"]

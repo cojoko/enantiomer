@@ -1,5 +1,5 @@
 
 .DS_Store
 .vscode/settings.json
-__pycache__/anomer.cpython-38.pyc
+__pycache__/enantiomer.cpython-38.pyc
 *.pyc

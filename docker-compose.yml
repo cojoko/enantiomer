@@ -1,5 +1,5 @@
 version: '3'
 services:
-  anomer:
+  enantiomer:
     build: .
     container_name: demo
