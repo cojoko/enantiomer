@@ -1,6 +1,6 @@
 # Enantiomer
 
-Search for chemical similarity in vector space
+Use NLP principles to search for chemical similarity in vector space
 
 ## Background
 
