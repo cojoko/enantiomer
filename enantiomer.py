@@ -12,8 +12,6 @@ from sklearn.neighbors import NearestNeighbors
 import boto3
 import s3fs
 
-# TODO (optional): Import any other packages as needed
-
 import logging
 logging.getLogger().setLevel(logging.INFO)
 
